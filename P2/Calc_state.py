@@ -1,38 +1,33 @@
-# region imports
+#region imports
 import numpy as np
 from copy import deepcopy as dc
 from scipy.optimize import fsolve
 from UnitConversions import UnitConverter as UC
 from pyXSteam.XSteam import XSteam
 from pyXSteam import Constants
+#endregion
 
-
-# endregion
-
-# region class definitions
+#region class definitions
 class triplePt_PT():
     def __init__(self):
         """
         get the triple point pressure in bar and temperature in C
         """
-        self.t = Constants.__TRIPLE_POINT_TEMPERATURE__ + Constants.__ABSOLUTE_ZERO_CELSIUS__
-        self.p = Constants.__TRIPLE_POINT_PRESSURE__ * 1000 * UC.kpa_to_bar
-
+        self.t=Constants.__TRIPLE_POINT_TEMPERATURE__+Constants.__ABSOLUTE_ZERO_CELSIUS__
+        self.p=Constants.__TRIPLE_POINT_PRESSURE__*1000*UC.kpa_to_bar
 
 class criticalPt_PT():
     def __init__(self):
         """
         get the triple point pressure in bar and temperature in C
         """
-        self.t = Constants.__CRITICAL_TEMPERATURE__ + Constants.__ABSOLUTE_ZERO_CELSIUS__
-        self.p = Constants.__CRITICAL_PRESSURE__ * 1000 * UC.kpa_to_bar
-
+        self.t=Constants.__CRITICAL_TEMPERATURE__+Constants.__ABSOLUTE_ZERO_CELSIUS__
+        self.p=Constants.__CRITICAL_PRESSURE__*1000*UC.kpa_to_bar
 
 class satProps():
     """
     For storage and retrieval of saturated properties at a given P&T
     """
-
     def __init__(self):
         self.tsat = None
         self.psat = None  # storage is in bar b/c pyXSteam
@@ -57,8 +52,7 @@ class satProps():
         self.vgf = self.vg - self.vf
 
     def get(self):
-        return (
-        self.tsat, self.psat, self.hf, self.hg, self.hgf, self.sf, self.sg, self.sgf, self.vf, self.vg, self.vgf)
+        return (self.tsat, self.psat, self.hf, self.hg, self.hgf, self.sf, self.sg, self.sgf, self.vf, self.vg, self.vgf)
 
     def getTextOutput(self, SI=True):
         """
@@ -67,19 +61,19 @@ class satProps():
         :return: self.txtOut
         """
         if SI is False:
-            P = self.psat * UC.bar_to_psi
-            PUnits = "psi"
-            T = UC.C_to_F(self.tsat)
-            TUnits = "F"
-            hf = self.hf * UC.kJperkg_to_BTUperlb
-            hg = self.hg * UC.kJperkg_to_BTUperlb
-            HUnits = "BTU/lb"
-            sf = self.sf * UC.kJperkgK_to_BTUperlbR
-            sg = self.sg * UC.kJperkgK_to_BTUperlbR
-            SUnits = "BTU/lb*R"
-            vf = self.vf * UC.m3perkg_to_ft3perlb
-            vg = self.vg * UC.m3perkg_to_ft3perlb
-            VUnits = "ft^3/lb"
+            P = self.psat*UC.bar_to_psi
+            PUnits="psi"
+            T =UC.C_to_F(self.tsat)
+            TUnits="F"
+            hf=self.hf*UC.kJperkg_to_BTUperlb
+            hg=self.hg*UC.kJperkg_to_BTUperlb
+            HUnits="BTU/lb"
+            sf=self.sf*UC.kJperkgK_to_BTUperlbR
+            sg=self.sg*UC.kJperkgK_to_BTUperlbR
+            SUnits="BTU/lb*R"
+            vf=self.vf*UC.m3perkg_to_ft3perlb
+            vg=self.vg*UC.m3perkg_to_ft3perlb
+            VUnits="ft^3/lb"
         else:
             P = self.psat
             PUnits = "bar"
@@ -96,18 +90,16 @@ class satProps():
             VUnits = "m^3/kg"
 
         self.txtOut = "psat = {:0.2f} {}, tsat = {:0.2f} {}".format(P, PUnits, T, TUnits)
-        self.txtOut += "\nhf = {:0.2f} {}, hg = {:0.2f} {}".format(hf, HUnits, hg, HUnits)
-        self.txtOut += "\nsf = {:0.2f} {}, sg = {:0.2f} {}".format(sf, SUnits, sg, SUnits)
-        self.txtOut += "\nvf = {:0.4f} {}, vg = {:0.4f} {}".format(vf, VUnits, vg, VUnits)
+        self.txtOut += "\nhf = {:0.2f} {}, hg = {:0.2f} {}".format(hf, HUnits,hg,HUnits)
+        self.txtOut += "\nsf = {:0.2f} {}, sg = {:0.2f} {}".format(sf,SUnits,sg,SUnits)
+        self.txtOut += "\nvf = {:0.4f} {}, vg = {:0.4f} {}".format(vf,VUnits,vg,VUnits)
         return self.txtOut
-
-
+    
 class stateProps():
     """
     for storage and retrieval of a thermodynamic state
     T (C), P (kPa), u(kJ/kg), h (kJ/kg), s (kJ/kg*K), v (m^3/kg), x (dimensionless)
     """
-
     def __init__(self):
         self.name = None
         self.t = None
@@ -119,31 +111,31 @@ class stateProps():
         self.x = None
         self.region = None
 
-    def getVal(self, name='T', SI=True):
+    def getVal(self, name='T', SI=True ):
         if SI:
-            uCF = 1
-            hCF = 1
-            sCF = 1
-            vCF = 1
-            pCF = 1
+            uCF=1
+            hCF=1
+            sCF=1
+            vCF=1
+            pCF=1
         else:
-            uCF = UC.kJperkg_to_BTUperlb
-            hCF = UC.kJperkg_to_BTUperlb
-            sCF = UC.kJperkgK_to_BTUperlbR
-            vCF = UC.m3perkg_to_ft3perlb
-            pCF = UC.kpa_to_psi
+            uCF=UC.kJperkg_to_BTUperlb
+            hCF=UC.kJperkg_to_BTUperlb
+            sCF=UC.kJperkgK_to_BTUperlbR
+            vCF=UC.m3perkg_to_ft3perlb
+            pCF=UC.kpa_to_psi
 
-        n = name.lower()
+        n=name.lower()
         if n == 't':
             return self.t if SI else UC.C_to_F(self.t)
         if n == 'h':
-            return self.h * hCF
+            return self.h*hCF
         if n == 's':
-            return self.s * sCF
+            return self.s*sCF
         if n == 'v':
-            return self.v * vCF
+            return self.v*vCF
         if n == 'p':
-            return self.p * pCF
+            return self.p*pCF
 
     def print(self):
         if self.name is not None:
@@ -162,12 +154,10 @@ class stateProps():
             print('x = {:0.4f}'.format(self.x))
         print()
 
-
 class StateDataForPlotting:
     """
     I'm making this class for easy storage of data for plotting.
     """
-
     def __init__(self):
         self.t = []
         self.p = []
@@ -199,7 +189,7 @@ class StateDataForPlotting:
         self.v.append(v)
 
     def getAxisLabel(self, W='T', SI=True):
-        w = W.lower()
+        w=W.lower()
         if w == 't':
             return r'T $\left(^oC\right)$' if SI else r'T $\left(^oF\right)$'
         if w == 'h':
@@ -214,32 +204,31 @@ class StateDataForPlotting:
     def getDataCol(self, W='T', SI=True):
 
         if SI:
-            uCF = 1
-            hCF = 1
-            sCF = 1
-            vCF = 1
-            pCF = 1
+            uCF=1
+            hCF=1
+            sCF=1
+            vCF=1
+            pCF=1
         else:
-            uCF = UC.kJperkg_to_BTUperlb
-            hCF = UC.kJperkg_to_BTUperlb
-            sCF = UC.kJperkgK_to_BTUperlbR
-            vCF = UC.m3perkg_to_ft3perlb
-            pCF = UC.kpa_to_psi
+            uCF=UC.kJperkg_to_BTUperlb
+            hCF=UC.kJperkg_to_BTUperlb
+            sCF=UC.kJperkgK_to_BTUperlbR
+            vCF=UC.m3perkg_to_ft3perlb
+            pCF=UC.kpa_to_psi
 
-        w = W.lower()
-        if w == 't':
+        w=W.lower()
+        if w=='t':
             return self.t if SI else [UC.C_to_F(t) for t in self.t]
         if w == 'u':
             return np.array(self.u) * uCF
-        if w == 'h':
-            return np.array(self.h) * hCF
-        if w == 's':
-            return np.array(self.s) * sCF
-        if w == 'v':
-            return np.array(self.v) * vCF
-        if w == 'p':
-            return np.array(self.p) * pCF
-
+        if w=='h':
+            return np.array(self.h)*hCF
+        if w=='s':
+            return np.array(self.s)*sCF
+        if w=='v':
+            return np.array(self.v)*vCF
+        if w=='p':
+            return np.array(self.p)*pCF
 
 class Steam_SI:
     def __init__(self, P=None, T=None, x=None, v=None, h=None, u=None, s=None, name=None):
@@ -272,8 +261,8 @@ class Steam_SI:
         self.state.s = s  # entropy - kJ/(kg K)
         self.state.name = name  # a useful identifier
         self.state.region = None  # 'superheated' or 'saturated'
-        self.RW = UC.R / UC.MW_Water  # water gas constant kJ/(kg*K)
-        self.getState(P=P, T=T, x=x, v=v, h=h, u=u, s=s)
+        self.RW=UC.R/UC.MW_Water #water gas constant kJ/(kg*K)
+        self.getState(P=P,T=T,x=x,v=v,h=h, u=u ,s=s)
 
     def getsatProps_p(self, p):
         """
@@ -291,10 +280,10 @@ class Steam_SI:
         self.satProps.ug = self.steamTable.uV_p(p)
         self.satProps.sf = self.steamTable.sL_p(p)
         self.satProps.sg = self.steamTable.sV_p(p)
-        self.satProps.vgf = self.satProps.vg - self.satProps.vf
-        self.satProps.hgf = self.satProps.hg - self.satProps.hf
-        self.satProps.sgf = self.satProps.sg - self.satProps.sf
-        self.satProps.ugf = self.satProps.ug - self.satProps.uf
+        self.satProps.vgf = self.satProps.vg-self.satProps.vf
+        self.satProps.hgf = self.satProps.hg-self.satProps.hf
+        self.satProps.sgf = self.satProps.sg-self.satProps.sf
+        self.satProps.ugf = self.satProps.ug-self.satProps.uf
         return dc(self.satProps)
 
     def getsatProps_t(self, t):
@@ -304,8 +293,8 @@ class Steam_SI:
         :param t:
         :return:
         """
-        self.satProps.tsat = t
-        self.satProps.psat = self.steamTable.psat_t(t)
+        self.satProps.tsat=t
+        self.satProps.psat=self.steamTable.psat_t(t)
         self.getsatProps_p(self.psat)
         return dc(self.satProps)
 
@@ -328,7 +317,7 @@ class Steam_SI:
         """
         if self.state.x == 0.0:
             self.state.region = "saturated liquid"
-        elif self.state.x == 1.0:
+        elif self.state.x ==1.0:
             self.state.region = "saturated vapor"
         else:
             self.state.region = "two-phase"
@@ -337,8 +326,8 @@ class Steam_SI:
         self.state.h = self.satProps.hf + self.state.x * self.satProps.hgf
         self.state.s = self.satProps.sf + self.state.x * self.satProps.sgf
         self.state.v = self.satProps.vf + self.state.x * self.satProps.vgf
-
-    def between(self, x, xLow, xHigh):
+        
+    def between(self, x, xLow,xHigh):
         """
         This is just for convenience when finding if subcooled, superheated or saturated
         :param x: a thermodynamic property
@@ -346,10 +335,10 @@ class Steam_SI:
         :param xHigh: high value
         :return: boolean
         """
-        if x < xLow: return False
-        if x > xHigh: return False
+        if x<xLow: return False
+        if x>xHigh: return False
         return True
-
+    
     def clamp(self, x, xLow, xHigh):
         """
         A convenience function to ensure a varible is within bounds
@@ -358,10 +347,10 @@ class Steam_SI:
         :param xHigh:
         :return:
         """
-        if x < xLow: return xLow
-        if x > xHigh: return xHigh
+        if x<xLow: return xLow
+        if x>xHigh: return xHigh
         return x
-
+    
     def getState(self, P=None, T=None, x=None, v=None, u=None, h=None, s=None, name=None):
         """
         Calculates the thermodynamic state variables based on specified input values.
@@ -381,61 +370,61 @@ class Steam_SI:
             self.state.name = name
 
         # Step 1: select the proper case from the 21 and encode it in a two letter string
-        # region select case
-        case = None
+        #region select case
+        case=None
         if P is not None:  # pressure is specified
             if T is not None:  # 1
-                case = "pt"
+                case="pt"
             elif v is not None:  # 2
-                case = "pv"
+                case="pv"
             elif h is not None:  # 3
-                case = "ph"
+                case="ph"
             elif u is not None:  # 4
-                case = "pu"
+                case="pu"
             elif s is not None:  # 5
-                case = "ps"
+                case="ps"
             elif x is not None:  # 6
-                case = "px"
-        elif case is None and T is not None:  # temperature is specified
+                case="px"
+        elif case is None and T is not None:   #temperature is specified
             if x is not None:  # 7
-                case = "tx"
+                case="tx"
             elif v is not None:  # 8
-                case = "tv"
+                case="tv"
             elif u is not None:  # 9
                 case = "tu"
             elif h is not None:  # 10
-                case = "th"
+                case="th"
             elif s is not None:  # 11
-                case = "ts"
+                case="ts"
         elif case is None and x is not None:  # quality is specified
             if v is not None:  # 12
-                case = "xv"
+                case ="xv"
             elif u is not None:  # 13
                 case = "xu"
             elif h is not None:  # 14
-                case = "xh"
+                case="xh"
             elif s is not None:  # 15
-                case = "xs"
+                case="xs"
         elif case is None and v is not None:  # quality is specified
             if h is not None:  # 16
-                case = "vh"
+                case="vh"
             elif u is not None:  # 17
                 case = "vu"
             elif s is not None:  # 18
-                case = "vs"
+                case="vs"
         elif case is None and h is not None:  # enthalpy is specified
             if s is not None:  # 19
-                case = "hs"
+                case="hs"
             elif u is not None:  # 20
                 case = "hu"
         elif case is None and s is not None:  # enthalpy is specified
             case = "su"  # 21
-
+            
         if case is None:
             return self.state
-        # endregion
-
-        case = case.lower()  # probably unnecessary
+        #endregion
+        
+        case=case.lower()  # probably unnecessary
 
         # Step 2: select the proper case from the 21.  Note that PT is the same as TP etc.
         if case.__contains__("p"):
@@ -443,7 +432,7 @@ class Steam_SI:
             self.getsatProps_p(self.state.p)
             # case 1:  pt or tp
             if case.__contains__("t"):
-                self.state.t = T
+                self.state.t=T
                 self.satProps.tsat = round(self.satProps.tsat, 3)  # I will compare at 3 three decimal places
                 # compare T to tsat
                 if T < self.satProps.tsat or T > self.satProps.tsat or self.satProps.tsat is "nan":
@@ -515,7 +504,7 @@ class Steam_SI:
                     self.calcState_1Phase()
                 else:  # two-phase
                     # first calculate quality
-                    self.state.t = self.satProps.tsat
+                    self.state.t=self.satProps.tsat
                     self.state.x = (self.state.s - self.satProps.sf) / (self.satProps.sgf)
                     self.calcState_2Phase()
             # case 6 px or xp
@@ -526,8 +515,8 @@ class Steam_SI:
                 self.state.x = self.clamp(self.state.x, 0.0, 1.0)
                 self.calcState_2Phase()
         elif case.__contains__('t'):
-            self.state.t = T
-            self.satProps = self.getsatProps_t(self.state.t)
+            self.state.t=T
+            self.satProps=self.getsatProps_t(self.state.t)
             # case 7:  tv or vt
             if case.__contains__('v'):
                 self.state.v = v
@@ -602,12 +591,11 @@ class Steam_SI:
                 self.state.p = self.state.satProps.psat
                 self.state.x = self.clamp(self.state.x, 0.0, 1.0)
                 self.calcState_2Phase()
-        elif case.__contains__('v'):
-            self.state.v = v
+        elif case.__contains__('v') :
+            self.state.v=v
             # case 12:  vh or hv
             if case.__contains__('h'):
                 self.state.h = h
-
                 def fn12(P):
                     # could be single phase or two-phase, but both v&h have to match at same x
                     self.getsatProps_p(P)
@@ -634,7 +622,6 @@ class Steam_SI:
             # case 13:  vu or uv
             elif case.__contains__('u'):
                 self.state.u = u
-
                 # use fsolve to find P&T at this v & u
                 def fn13(PT):
                     self.getsatProps_p(PT[0])
@@ -644,7 +631,6 @@ class Steam_SI:
                         return [self.state.v - (self.satProps.vf + self.state.x * self.satProps.vgf), 0]
                     return [self.state.v - self.steamTable.v_pt(PT[0], PT[1]),
                             self.state.u - self.steamTable.u_pt(PT[0], PT[1])]
-
                 props = fsolve(fn13, [1, 100])
                 self.state.p = props[0]
                 self.state.t = props[1]
@@ -663,7 +649,6 @@ class Steam_SI:
             # case 14:  vs os sv
             elif case.__contains__('s'):
                 self.state.s = s
-
                 def fn14(PT):
                     self.getsatProps_p(PT[0])
                     if self.between(self.state.s, self.satProps.sf, self.satProps.sg):
@@ -671,7 +656,6 @@ class Steam_SI:
                         return [self.state.v - self.satProps.vf - self.state.x * self.satProps.vgf, 0.0]
                     return [self.state.v - self.steamTable.v_pt(PT[0], PT[1]),
                             self.state.s - self.steamTable.s_pt(PT[0], PT[1])]
-
                 props = fsolve(fn14, [1, 100])
                 self.state.p = props[0]
                 self.state.t = props[1]
@@ -689,22 +673,19 @@ class Steam_SI:
                     self.calcState_2Phase()
             # case 15:  vx or xv
             elif case.__contains__('x'):
-                self.state.x = self.clamp(x, 0.0, 1.0)
-
+                self.state.x = self.clamp(x,0.0,1.0)
                 def fn15(p):
                     self.getsatProps_p(p)
                     return self.state.v - (self.satProps.vf + self.state.x * self.satProps.vgf)
-
                 props = fsolve(fn15, [1])
                 self.state.p = props[0]
                 self.state.t = self.satProps.tsat
                 self.calcState_2Phase()
         elif case.__contains__('h'):
-            self.state.h = h
+            self.state.h=h
             # case 16:  hu or uh
             if case.__contains__('u'):
                 self.state.u = u
-
                 # use fsolve to find P&T at this h & u
                 def fn16(PT):
                     self.getsatProps_p(PT[0])
@@ -713,7 +694,6 @@ class Steam_SI:
                         return [self.state.h - self.satProps.hf - self.state.x * self.satProps.hgf, 0.0]
                     return [self.state.h - self.steamTable.h_pt(PT[0], PT[1]),
                             self.state.u - self.steamTable.u_pt(PT[0], PT[1])]
-
                 props = fsolve(fn16, [1, 100])
                 self.state.p = props[0]
                 self.state.t = props[1]
@@ -732,7 +712,6 @@ class Steam_SI:
             # case 17:  hs or sh
             elif case.__contains__('s'):
                 self.state.s = s
-
                 def fn17(PT):
                     self.getsatProps_p(PT[0])
                     if self.between(self.state.s, self.satProps.sf, self.satProps.sg):
@@ -740,7 +719,6 @@ class Steam_SI:
                         return [self.state.h - self.satProps.hf - self.state.x * self.satProps.hgf, 0.0]
                     return [self.state.h - self.steamTable.h_pt(PT[0], PT[1]),
                             self.state.s - self.steamTable.s_pt(PT[0], PT[1])]
-
                 props = fsolve(fn17, [1, 100])
                 self.state.p = props[0]
                 self.state.t = props[1]
@@ -758,12 +736,10 @@ class Steam_SI:
                     self.calcState_2Phase()
             # case 18:  hx or xh
             elif case.__contains__('x'):
-                self.state.x = self.clamp(x, 0.0, 1.0)
-
+                self.state.x = self.clamp(x,0.0,1.0)
                 def fn18(p):
                     self.getsatProps_p(p)
                     return self.state.h - (self.satProps.hf + self.state.x * self.satProps.hgf)
-
                 props = fsolve(fn18, [1])
                 self.state.p = props[0]
                 self.getsatProps_p(self.state.p)
@@ -774,7 +750,6 @@ class Steam_SI:
             # case 19:  us or su
             if case.__contains__('s'):
                 self.state.s = s
-
                 def fn19(PT):
                     self.getsatProps_p(PT[0])
                     if self.between(self.state.s, self.satProps.sf, self.satProps.sg):
@@ -782,7 +757,6 @@ class Steam_SI:
                         return [self.state.u - self.satProps.uf - self.state.x * self.satProps.ugf, 0.0]
                     return [self.state.u - self.steamTable.u_pt(PT[0], PT[1]),
                             self.state.s - self.steamTable.s_pt(PT[0], PT[1])]
-
                 props = fsolve(fn19, [1, 100])
                 self.state.p = props[0]
                 self.state.t = props[1]
@@ -800,28 +774,24 @@ class Steam_SI:
                     self.calcState_2Phase()
             # case 20:  ux or xu
             elif case.__contains__('x'):
-                self.state.x = self.clamp(x, 0.0, 1.0)
+                self.state.x = self.clamp(x,0.0,1.0)
                 self.state.region = "two-phase"
-
                 def fn20(p):
                     self.getsatProps_p(p)
                     return self.state.h - (self.satProps.hf + self.state.x * self.satProps.hgf)
-
                 props = fsolve(fn20, [1])
                 self.state.p = props[0]
                 self.getsatProps_p(self.state.p)
                 self.state.t = self.satProps.tsat
                 self.calcState_2Phase()
         elif case.__contains__('s'):
-            self.state.s = s
+            self.state.s=s
             # case 21:  sx or xs
             if case.__contains__('x'):
-                self.state.x = self.clamp(x, 0.0, 1.0)
-
+                self.state.x = self.clamp(x, 0.0,1.0)
                 def fn21(p):
                     self.getsatProps_p(p)
                     return self.state.h - (self.satProps.hf + self.state.x * self.satProps.hgf)
-
                 props = fsolve(fn21, [1])
                 self.state.p = props[0]
                 self.getsatProps_p(self.state.p)
@@ -854,44 +824,44 @@ class Steam_SI:
         if self.state.x is not None:
             print('x = {:.4f}'.format(self.state.x))
         print('')
+#endregion
 
-
-# endregion
-
-# region function definitions
+#region function definitions
 def main():
-    inlet = Steam_SI(P=80, x=1.0, name="Turbine Inlet")
+
+    inlet=Steam_SI(P=80, x=1.0, name="Turbine Inlet")
     inlet.print()
     h1 = inlet.state.h
     s1 = inlet.state.s
-    print(h1, s1, '\n')
-    steam = XSteam(XSteam.UNIT_SYSTEM_MKS)
+    print(h1,s1,'\n')
+    steam=XSteam(XSteam.UNIT_SYSTEM_MKS)
 
-    outlet = Steam_SI(P=1, s=inlet.state.s, name='Turbine Exit')
-    # notice -  s=inlet.s
+    outlet=Steam_SI(P=1, s=inlet.state.s, name='Turbine Exit')
+    #notice -  s=inlet.s
     outlet.print()
 
-    another = Steam_SI(P=85.75, h=2050, name='State 3')
+    another=Steam_SI(P=85.75, h=2050, name='State 3')
     another.print()
 
-    yetanother = Steam_SI(P=89, h=4125, name='State 4')
+    yetanother=Steam_SI(P=89, h=4125, name='State 4')
     yetanother.print()
 
-    g1 = Steam_SI(P=8, x=1.0, name='Gap1')
+    g1=Steam_SI(P=8, x=1.0, name='Gap1')
     g1.print()
-    g2 = Steam_SI(P=g1.state.p, s=g1.state.s * 1.0012, name='Gap2')
+    g2=Steam_SI(P=g1.state.p, s=g1.state.s * 1.0012, name='Gap2')
     g2.print()
-    g2 = Steam_SI(P=g1.state.p, s=6.6699, name='Gap3')
+    g2=Steam_SI(P=g1.state.p, s=6.6699, name='Gap3')
     g2.print()
 
-    # uncommenting the next two lines will cause a ValueError error
-    # final1 = State(7000, T=250, name='State 5')
-    # final1.print()
 
 
-# endregion
 
-# region function calls
+    #uncommenting the next two lines will cause a ValueError error
+    #final1 = State(7000, T=250, name='State 5')
+    #final1.print()
+#endregion
+
+#region function calls
 if __name__ == "__main__":
-    main()
-# endregion
+   main()
+#endregion
